@@ -28,7 +28,7 @@ provider "aws" {
 
 resource "aws_instance" "app_server" {
   ami           = "ami-0aa7d40eeae50c9a9"
-  instance_type = "t2.micro"
+  instance_type = "t1.micro"
   count = var.instance_count_needed ? var.instance_count : 1
 
   user_data = <<-EOF
