@@ -36,10 +36,10 @@ jobs:
         echo "tfpath terraform/create-ec2/"
         echo "** Running Terraform Init***"
         terraform init
-        
+
 #        echo "** Running Terraform Validate**"
 #        terraform validate
-        
+
         echo "** Running Terraform Plan**"
         terraform plan
         
