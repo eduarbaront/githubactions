@@ -23,9 +23,9 @@ jobs:
         AWS_SECRET_ACCESS_KEY:
         AWS_SESSION_TOKEN:
       with:
-        aws-access-key-id: ${{ env.AWS_ACCESS_KEY_ID }}
-        aws-secret-access-key: ${{ env.AWS_SECRET_ACCESS_KEY }}
-        aws-region: us-west-2
+        aws-access-key-id: ASIAY4EBMPRVHJESONMF
+        aws-secret-access-key: IwWaUOZ855fZ+BcyNhVB/CbW/kyJMFDQczZqSxXT
+        aws-region: us-east-1
     - name: Setup Terraform CLI
       uses: hashicorp/setup-terraform@v2.0.2
 
