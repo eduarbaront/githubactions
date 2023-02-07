@@ -34,7 +34,7 @@ jobs:
         echo "** Running Terraform Validate**"
         terraform validate
         
-        echo "** Running Terraform Plan***"
+        echo "** Running Terraform Plan**"
         terraform plan
         
 #        echo "** Running Terraform Apply**"
