@@ -26,18 +26,9 @@ provider "aws" {
   region  = var.region
 }
 
-resource "aws_instance" "app_server" {
-  ami           = "ami-0aa7d40eeae50c9a9"
-  instance_type = "t1.micro"
-  count = var.instance_count_needed ? var.instance_count : 1
-
-  user_data = <<-EOF
-  #!/bin/bash
-  echo "This script was executed from user_data"
-  EOF
-
-  tags = {
-    Name = "ExampleAppServerInstance"
-  }
+resource "aws_instance" "example" {
+	ami = "ami-0357d42faf6fa582f"
+	instance_type = "t2.micro"
 }
+
 
