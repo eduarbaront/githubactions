@@ -19,8 +19,8 @@ jobs:
     - name: Configure AWS Credentials Action For GitHub Actions
       uses: aws-actions/configure-aws-credentials@v1-node16
       with:
-          aws-access-key-id: ASIAZXU2E3WTE3IGQ5NK
-          aws-secret-access-key: KWkmKWO0zn3BQnyMGKKucNyobNNz53HIOPnFHl4u
+          aws-access-key-id: ASIAY4EBMPRVHJESONMF
+          aws-secret-access-key: IwWaUOZ855fZ+BcyNhVB/CbW/kyJMFDQczZqSxXT
           aws-region: us-east-1
     - name: Setup Terraform CLI
       uses: hashicorp/setup-terraform@v2.0.2
