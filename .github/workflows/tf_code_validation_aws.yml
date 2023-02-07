@@ -43,8 +43,8 @@ jobs:
         echo "** Running Terraform Plan**"
         terraform plan
         
-#        echo "** Running Terraform Apply**"
-#        terraform apply -auto-approve
+        echo "** Running Terraform Apply**"
+        terraform apply -auto-approve
       working-directory: terraform/create-ec2/
     - name: Terraform Destroy
       run: |
