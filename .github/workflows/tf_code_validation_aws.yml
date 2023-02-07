@@ -25,6 +25,7 @@ jobs:
       with:
         aws-access-key-id: ASIAY4EBMPRVHJESONMF
         aws-secret-access-key: IwWaUOZ855fZ+BcyNhVB/CbW/kyJMFDQczZqSxXT
+        aws-session-token: IQoJb3JpZ2luX2VjENz//////////wEaCXVzLWVhc3QtMSJGMEQCIHxqrfToEPdXIYvWxwWqN12KBDBaw4qJW1OarAKkSRISAiAfl4Y/VbOEZqW+HjfSJuj5QZvcbKSiXDnC9UjBXPxJpSrzAghlEAAaDDYxMDE1NjcwNjkyMiIMWQlFEue1x+DdO7wDKtACJhda3iJR2azNI/Xl8Uz03ZT67T0XufQtj4NKW2tpBPwfzVHrgAgKgrFQXdJmTDYy8v6Kly7kl/TuE7gbcHpSA9n2UyRlpNzu1S4UOQiIfwk/xkHxO0/fi3JIy6koFKNzgt2dlqu5yfIFPVGhLTbnNS6+DLVHIcqhgr/YZlN9rAwQjYMPcYzMKfgaZT7scw5OitCIkUIXjQznUghDasUyYfsGmZ/KTlV5+4SLeffQKQK6r6UTEiKTHTfwtQ7dFO4WGjd8o1GdVAiNt5BnvvdoOsPU8NdGgKCv1bqPABtW44J5OimJqoyI48WfMk93HAjTr4YrBRCxNJjQOcjAB0QWBpUqPe+ShiDEhEBLlmCGDdiCKIptfPVE5vJv+HejeU2UJFh/WpFZ+Ou4cNBCiHmT9uVcgVMNtu+YSTTyJcjrR+dPMKk+an3JTEcrBMdViNpuMO7Oip8GOqgBYW5vdxE4WOREJZE5NnZkdvpDV7KOYfwP43HuirnJHFNpu/0CuRsGO9h5ficO0Z2S31mO5lIjM4GtiMFEgiO6q6nekR2gnjndd50FBUg6F/MHjEofkkaCWu1mkX5PzcAVzoSRTPe5n8GyoyBaLHuYZDDkvYWW54hTT8hzj0aqFSIG3dKIl1DkqKz1sTvV39zutn+fLInFumD6GW3KZmiLiMNdMcs91Utl
         aws-region: us-east-1
     - name: Setup Terraform CLI
       uses: hashicorp/setup-terraform@v2.0.2
