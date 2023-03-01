@@ -1,0 +1,19 @@
+name: PipelineV1
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  infracost:
+    name: Infracost
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Setup Infracost
+      uses: infracost/actions/setup@v2
+        # See https://github.com/infracost/actions/tree/master/setup for other inputs
+      with:
+          api-key: ${{ secrets.INFRACOST_API_KEY }}
