@@ -10,6 +10,9 @@ jobs:
     runs-on: ubuntu-latest
     env:
       TF_ROOT: terraform/create-ec2/
+    defaults:
+     run:
+      working-directory: ${{ env.TF_ROOT }}
       
     steps:
     - uses: actions/checkout@v2.5.0  
