@@ -1,8 +1,6 @@
 name: Terraform AWS Workflow
 
 on:
-  push:
-    branches: [ main1 ]
   pull_request:
     branches: [ main1 ]
 
@@ -25,9 +23,9 @@ jobs:
         AWS_SECRET_ACCESS_KEY:
         AWS_SESSION_TOKEN:
       with:
-        aws-access-key-id: xxx
-        aws-secret-access-key: xxx
-        aws-session-token: xxx
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
         aws-region: us-east-1
     - name: Setup Terraform CLI
       uses: hashicorp/setup-terraform@v2.0.2
