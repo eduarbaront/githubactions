@@ -54,7 +54,7 @@ resource "aws_network_interface" "foo" {
   }
 }
 
-resource "aws_instance" "fooo" {
+resource "aws_instance" "prodfooo" {
 	ami = "ami-09d56f8956ab235b3"
 	instance_type = "t2.micro"
 
