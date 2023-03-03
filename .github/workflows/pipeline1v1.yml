@@ -76,8 +76,7 @@ jobs:
       # Generate Infracost JSON file as the baseline.
     - name: Generate Infracost cost estimate baseline
       run: |
-          infracost breakdown --path=${{ env.TF_ROOT }} \
-                              --format=json \
+          infracost breakdown --format=json \
                               --out-file=/tmp/infracost-base.json
 
       # Checkout the current PR branch so we can create a diff.
@@ -87,8 +86,7 @@ jobs:
       # Generate an Infracost diff and save it to a JSON file.
     - name: Generate Infracost diff
       run: |
-          infracost diff --path=${{ env.TF_ROOT }} \
-                          --format=json \
+          infracost diff --format=json \
                           --compare-to=/tmp/infracost-base.json \
                           --out-file=/tmp/infracost.json
 
