@@ -1,0 +1,116 @@
+name: Terraform AWS Workflow STG
+
+on:
+  pull_request:
+    branches: [ main ]
+    paths:
+      - 'terraform/stg/**'
+
+
+jobs:
+  tf_code_check:
+    name: Terraform Validation and Build
+    runs-on: ubuntu-latest
+    env:
+      TF_ROOT: terraform/stg/
+    defaults:
+     run:
+      working-directory: ${{ env.TF_ROOT }}
+      
+    steps:
+    - uses: actions/checkout@v2.5.0  
+
+    - name: Configure AWS Credentials Action For GitHub Actions
+      uses: aws-actions/configure-aws-credentials@v1
+      env:
+        AWS_DEFAULT_REGION:
+        AWS_REGION:
+        AWS_ACCESS_KEY_ID:
+        AWS_SECRET_ACCESS_KEY:
+        AWS_SESSION_TOKEN:
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_STG }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY_STG }}
+        aws-session-token: ${{ secrets.AWS_SESSION_TOKEN_STG }}
+        aws-region: us-east-1
+    - name: Setup Terraform CLI
+      uses: hashicorp/setup-terraform@v2.0.2
+
+        
+    - name: Terraform fmt
+      run: |
+        echo "** Running Terraform Init***"
+        terraform fmt
+        
+        
+    - name: Terraform init
+      run: |
+        echo "** Running Terraform Init***"
+        terraform init
+        
+        
+    - name: Terraform validate
+      run: |
+        echo "** Running Terraform Validate**"
+        terraform validate
+        
+    - name: Terraform plan
+      run: |
+        echo "** Running Terraform plan***"
+        terraform plan
+        
+    - name: Setup Infracost
+      uses: infracost/actions/setup@v2
+        # See https://github.com/infracost/actions/tree/master/setup for other inputs
+      with:
+          api-key: ${{ secrets.INFRACOST_API_KEY }}
+          
+
+      # Checkout the base branch of the pull request (e.g. main/master).
+    - name: Checkout base branch
+      uses: actions/checkout@v3
+      with:
+          ref: '${{ github.event.pull_request.base.ref }}'
+
+      # Generate Infracost JSON file as the baseline.
+    - name: Generate Infracost cost estimate baseline
+      run: |
+          infracost breakdown --path=./ \
+                              --format=json \
+                              --out-file=/tmp/infracost-base.json
+
+      # Checkout the current PR branch so we can create a diff.
+    - name: Checkout PR branch
+      uses: actions/checkout@v3
+
+      # Generate an Infracost diff and save it to a JSON file.
+    - name: Generate Infracost diff
+      run: |
+          infracost diff  --path=./ \
+                          --format=json \
+                          --compare-to=/tmp/infracost-base.json \
+                          --out-file=/tmp/infracost.json
+
+      # Posts a comment to the PR using the 'update' behavior.
+      # This creates a single comment and updates it. The "quietest" option.
+      # The other valid behaviors are:
+      #   delete-and-new - Delete previous comments and create a new one.
+      #   hide-and-new - Minimize previous comments and create a new one.
+      #   new - Create a new cost estimate comment on every push.
+      # See https://www.infracost.io/docs/features/cli_commands/#comment-on-pull-requests for other options.
+    - name: Post Infracost comment
+      run: |
+            infracost comment github --path=/tmp/infracost.json \
+                                     --repo=$GITHUB_REPOSITORY \
+                                     --github-token=${{github.token}} \
+                                     --pull-request=${{github.event.pull_request.number}} \
+                                     --behavior=update
+          
+          
+          
+          
+          
+          
+          
+          
+          

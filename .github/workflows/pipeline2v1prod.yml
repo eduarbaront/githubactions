@@ -3,13 +3,15 @@ name: Terraform AWS Infracost Workflow
 on:
   push:
     branches: [ main ]
+    paths:
+      - 'terraform/prod/**'
 
 jobs:
   tf_code_check:
     name: Terraform Validation and Build
     runs-on: ubuntu-latest
     env:
-      TF_ROOT: terraform/create-ec2/
+      TF_ROOT: terraform/prod/
     defaults:
      run:
       working-directory: ${{ env.TF_ROOT }}
@@ -26,17 +28,13 @@ jobs:
         AWS_SECRET_ACCESS_KEY:
         AWS_SESSION_TOKEN:
       with:
-        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY }}
-        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_PROD }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY_PROD }}
+        aws-session-token: ${{ secrets.AWS_SESSION_TOKEN_PROD }}
         aws-region: us-east-1
     - name: Setup Terraform CLI
       uses: hashicorp/setup-terraform@v2.0.2
 
-    - name: Terraform path
-      run: |
-        echo `pwd`
-        echo "tfpath terraform/create-ec2/"
         
     - name: Terraform fmt
       run: |
