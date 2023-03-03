@@ -1,0 +1,54 @@
+name: Terraform AWS Workflow
+
+on:
+  push:
+    branches: [ main1 ]
+  pull_request:
+    branches: [ main1 ]
+
+jobs:
+  tf_code_check:
+    name: Terraform Validation and Build
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2.5.0  
+
+    - name: Configure AWS Credentials Action For GitHub Actions
+      uses: aws-actions/configure-aws-credentials@v1
+      env:
+        AWS_DEFAULT_REGION:
+        AWS_REGION:
+        AWS_ACCESS_KEY_ID:
+        AWS_SECRET_ACCESS_KEY:
+        AWS_SESSION_TOKEN:
+      with:
+        aws-access-key-id: ASIAY4EBMPRVNIO46HVU
+        aws-secret-access-key: PsIuGf/+nhchOiYO9CCIXniTa77jusBn2LpwfFGi
+        aws-session-token: IQoJb3JpZ2luX2VjEN7//////////wEaCXVzLWVhc3QtMSJHMEUCIHL9u2TH1tcKSXBtgUWzElCkzhqtap6/f2Zdo4ZUocmpAiEAvHyaoAPmS7kkesftUxX6WN8581yuwVSYATpKu/etTD8q8wIIZxAAGgw2MTAxNTY3MDY5MjIiDJHX9xPLQB3y2PrmJyrQAsD9gUEhomjKjPsn6SsFhEa/ZGmLwIuqkm38Rru8lamEwdFzCW8QojcCRRuuPQwvUDeKgf7HK5f81cmOcvDWztoduOLjn2YFXYroaB5PDv0lP3J6e8q5fx99Cit//dZdEDpFeI9+7bLQ2X66F6v6Ubyl984CEmWj9gq0CSRbDrRH3T7sdoEjTe0Qm+bqH12RlYK/3Aa91B8zMiNhsfT4CayuThtV5ahPpoMUlRHgq9CBdqxraMlGby3kmSCI8WvKPPLca7kjsJ6qUa1jPTp1PBV5pdCZtCL+AKWG5+YZzuslIptLueGbzPkOD1+cIhTK4h4Es/UbecA0k71qgse1MaexHp65p3afk40je0JTozoNoqCocYu+g9RJO5hmkXljtnvBEh7xrRMSUv0d7I1M0EDrn3oSmfGAndYhO2DwEIMYc6e+miDDbJQFeN7rMm1YDDCEhoufBjqnAViQIC5T/N14ZE6MIRKhpPyRsJhLlS/7zEQ8VHeUISC0VN1R9bCeuDChg1AzG8zAReQ7LvErp00IZFg/8B3rlkCt2P0Jbffr/y0+n2swtZje+4L9C4xHcNYZbhVeSF7zuS98q9PGxuIOQPMR9SyfXpjv9vVaiIPjNPEy7DtmdoU/QM+weOoNt9txspeHe7qYZA4+aIM7A9MbYmXdEYhFvhWPmVb/GXe5
+        aws-region: us-east-1
+    - name: Setup Terraform CLI
+      uses: hashicorp/setup-terraform@v2.0.2
+
+    - name: Terraform init, plan and apply
+      run: |
+        echo `pwd`
+        echo "tfpath terraform/create-ec2/"
+        echo "** Running Terraform Init***"
+        terraform init
+        
+        echo "** Running Terraform Validate**"
+        terraform validate
+        
+        echo "** Running Terraform Plan***"
+        terraform plan
+        
+        echo "** Running Terraform Apply**"
+        terraform apply -auto-approve
+      working-directory: terraform/create-ec2/
+    - name: Terraform Destroy
+      run: |
+        echo "** Running Terraform Destroy**"
+        terraform plan -destroy
+        terraform destroy -auto-approve
+      working-directory: terraform/create-ec2/
