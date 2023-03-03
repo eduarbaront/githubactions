@@ -2,7 +2,7 @@ name: Terraform AWS Infracost Workflow
 
 on:
   push:
-    branches: [ main1 ]
+    branches: [ main ]
 
 jobs:
   tf_code_check:
