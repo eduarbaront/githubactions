@@ -55,9 +55,9 @@ jobs:
         echo "** Running Terraform Validate**"
         terraform validate
         
-    - name: Terraform validate
+    - name: Terraform plan
       run: |
-        echo "** Running Terraform Plan***"
+        echo "** Running Terraform plan***"
         terraform plan
         
     - name: Setup Infracost
