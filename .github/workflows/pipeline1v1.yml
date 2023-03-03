@@ -10,7 +10,9 @@ jobs:
   tf_code_check:
     name: Terraform Validation and Build
     runs-on: ubuntu-latest
-
+    env:
+      TF_ROOT: terraform/create-ec2/
+      
     steps:
     - uses: actions/checkout@v2.5.0  
 
@@ -23,32 +25,92 @@ jobs:
         AWS_SECRET_ACCESS_KEY:
         AWS_SESSION_TOKEN:
       with:
-        aws-access-key-id: ASIAY4EBMPRVNIO46HVU
-        aws-secret-access-key: PsIuGf/+nhchOiYO9CCIXniTa77jusBn2LpwfFGi
-        aws-session-token: IQoJb3JpZ2luX2VjEN7//////////wEaCXVzLWVhc3QtMSJHMEUCIHL9u2TH1tcKSXBtgUWzElCkzhqtap6/f2Zdo4ZUocmpAiEAvHyaoAPmS7kkesftUxX6WN8581yuwVSYATpKu/etTD8q8wIIZxAAGgw2MTAxNTY3MDY5MjIiDJHX9xPLQB3y2PrmJyrQAsD9gUEhomjKjPsn6SsFhEa/ZGmLwIuqkm38Rru8lamEwdFzCW8QojcCRRuuPQwvUDeKgf7HK5f81cmOcvDWztoduOLjn2YFXYroaB5PDv0lP3J6e8q5fx99Cit//dZdEDpFeI9+7bLQ2X66F6v6Ubyl984CEmWj9gq0CSRbDrRH3T7sdoEjTe0Qm+bqH12RlYK/3Aa91B8zMiNhsfT4CayuThtV5ahPpoMUlRHgq9CBdqxraMlGby3kmSCI8WvKPPLca7kjsJ6qUa1jPTp1PBV5pdCZtCL+AKWG5+YZzuslIptLueGbzPkOD1+cIhTK4h4Es/UbecA0k71qgse1MaexHp65p3afk40je0JTozoNoqCocYu+g9RJO5hmkXljtnvBEh7xrRMSUv0d7I1M0EDrn3oSmfGAndYhO2DwEIMYc6e+miDDbJQFeN7rMm1YDDCEhoufBjqnAViQIC5T/N14ZE6MIRKhpPyRsJhLlS/7zEQ8VHeUISC0VN1R9bCeuDChg1AzG8zAReQ7LvErp00IZFg/8B3rlkCt2P0Jbffr/y0+n2swtZje+4L9C4xHcNYZbhVeSF7zuS98q9PGxuIOQPMR9SyfXpjv9vVaiIPjNPEy7DtmdoU/QM+weOoNt9txspeHe7qYZA4+aIM7A9MbYmXdEYhFvhWPmVb/GXe5
+        aws-access-key-id: xxx
+        aws-secret-access-key: xxx
+        aws-session-token: xxx
         aws-region: us-east-1
     - name: Setup Terraform CLI
       uses: hashicorp/setup-terraform@v2.0.2
 
-    - name: Terraform init, plan and apply
+    - name: Terraform path
       run: |
         echo `pwd`
         echo "tfpath terraform/create-ec2/"
+        
+    - name: Terraform fmt
+      run: |
+        echo "** Running Terraform Init***"
+        terraform fmt
+        
+        
+    - name: Terraform init
+      run: |
         echo "** Running Terraform Init***"
         terraform init
         
+        
+    - name: Terraform validate
+      run: |
         echo "** Running Terraform Validate**"
         terraform validate
         
+    - name: Terraform validate
+      run: |
         echo "** Running Terraform Plan***"
         terraform plan
         
-        echo "** Running Terraform Apply**"
-        terraform apply -auto-approve
-      working-directory: terraform/create-ec2/
-    - name: Terraform Destroy
+    - name: Setup Infracost
+      uses: infracost/actions/setup@v2
+        # See https://github.com/infracost/actions/tree/master/setup for other inputs
+      with:
+          api-key: ${{ secrets.INFRACOST_API_KEY }}
+          
+
+      # Checkout the base branch of the pull request (e.g. main/master).
+    - name: Checkout base branch
+      uses: actions/checkout@v3
+      with:
+          ref: '${{ github.event.pull_request.base.ref }}'
+
+      # Generate Infracost JSON file as the baseline.
+    - name: Generate Infracost cost estimate baseline
       run: |
-        echo "** Running Terraform Destroy**"
-        terraform plan -destroy
-        terraform destroy -auto-approve
-      working-directory: terraform/create-ec2/
+          infracost breakdown --path=${TF_ROOT} \
+                              --format=json \
+                              --out-file=/tmp/infracost-base.json
+
+      # Checkout the current PR branch so we can create a diff.
+    - name: Checkout PR branch
+      uses: actions/checkout@v3
+
+      # Generate an Infracost diff and save it to a JSON file.
+    - name: Generate Infracost diff
+      run: |
+          infracost diff --path=${TF_ROOT} \
+                          --format=json \
+                          --compare-to=/tmp/infracost-base.json \
+                          --out-file=/tmp/infracost.json
+
+      # Posts a comment to the PR using the 'update' behavior.
+      # This creates a single comment and updates it. The "quietest" option.
+      # The other valid behaviors are:
+      #   delete-and-new - Delete previous comments and create a new one.
+      #   hide-and-new - Minimize previous comments and create a new one.
+      #   new - Create a new cost estimate comment on every push.
+      # See https://www.infracost.io/docs/features/cli_commands/#comment-on-pull-requests for other options.
+    - name: Post Infracost comment
+      run: |
+            infracost comment github --path=/tmp/infracost.json \
+                                     --repo=$GITHUB_REPOSITORY \
+                                     --github-token=${{github.token}} \
+                                     --pull-request=${{github.event.pull_request.number}} \
+                                     --behavior=update
+          
+          
+          
+          
+          
+          
+          
+          
+          
